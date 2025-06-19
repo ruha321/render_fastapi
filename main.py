@@ -2,7 +2,11 @@ from typing import Optional
 
 from fastapi.responses import HTMLResponse
 
-from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
+
+from fastapi import FastAPI, Request, status
+
+from fastapi.responses import JSONResponse
 
 import random  # randomライブラリを追加
 
@@ -37,17 +41,35 @@ def omikuji():
 @app.get("/index")
 def index():
     html_content = """
-    <html>
+    <html lang="ja">
         <head>
-            <title>Some HTML in here</title>
+            <title>haru web</title>
+            <meta charset="utf-8">
         </head>
         <body>
-            <h1>Look ma! HTML!</h1>
+            <h1>Welcome to Haru Web!</h1>
+            <main>
+                <div class="omikuji">
+                    <a href="/omikuji">
+                        <button>おみくじはこちら！</button>
+                    </a>
+                </div>
+            </main>
+            <div class="docs">
+                <a href="/docs">
+                    <button>docsを確認</button>
+                </a>
+            </div>
+            <div class="redoc">
+                <a href="/redoc">
+                    <button>redocへ</button>
+                </a>
+            </div>
         </body>
     </html>
     """
     return HTMLResponse(content=html_content, status_code=200)
 
-@app.post("/present")
-async def give_present(present: str):
-    return {"response": f"サーバです。メリークリスマス！ {present}ありがとう。お返しはキャンディーです。"}  # f文字列というPythonの機能を使っている
+@app.post("/oracle")
+async def give_present(name: str):
+    return {"response": f"神です。今日は暑いですね。{name}さんも熱中症に気を付けてくださいね。"}  # f文字列というPythonの機能を使っている
